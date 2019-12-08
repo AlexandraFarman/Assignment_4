@@ -1,0 +1,8 @@
+C:\local_files\docs\Alex_assignment4\GameCardLib\bin\Debug\GameCardLib.dll
+C:\local_files\docs\Alex_assignment4\GameCardLib\bin\Debug\GameCardLib.pdb
+C:\local_files\docs\Alex_assignment4\GameCardLib\bin\Debug\UtilitiesLib.dll
+C:\local_files\docs\Alex_assignment4\GameCardLib\bin\Debug\UtilitiesLib.pdb
+C:\local_files\docs\Alex_assignment4\GameCardLib\obj\Debug\GameCardLib.csprojAssemblyReference.cache
+C:\local_files\docs\Alex_assignment4\GameCardLib\obj\Debug\GameCardLib.csproj.CopyComplete
+C:\local_files\docs\Alex_assignment4\GameCardLib\obj\Debug\GameCardLib.dll
+C:\local_files\docs\Alex_assignment4\GameCardLib\obj\Debug\GameCardLib.pdb

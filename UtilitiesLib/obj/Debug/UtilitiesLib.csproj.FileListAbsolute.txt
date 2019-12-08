@@ -1,0 +1,5 @@
+C:\local_files\docs\Alex_assignment4\UtilitiesLib\bin\Debug\UtilitiesLib.dll
+C:\local_files\docs\Alex_assignment4\UtilitiesLib\bin\Debug\UtilitiesLib.pdb
+C:\local_files\docs\Alex_assignment4\UtilitiesLib\obj\Debug\UtilitiesLib.csprojAssemblyReference.cache
+C:\local_files\docs\Alex_assignment4\UtilitiesLib\obj\Debug\UtilitiesLib.dll
+C:\local_files\docs\Alex_assignment4\UtilitiesLib\obj\Debug\UtilitiesLib.pdb
