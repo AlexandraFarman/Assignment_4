@@ -25,6 +25,7 @@ namespace Blackjack
     {
         public List<PlayerPanel> PlayerPanels { get; set; }
         public GameManager GameManager { get; set; }
+        private Player CurrentPlayer { get; set; }
 
         public MainWindow()
         {
@@ -35,7 +36,8 @@ namespace Blackjack
 
         private void BtnNewGame_Click(object sender, RoutedEventArgs e)
         {
-            NewGameWindow ngw = new NewGameWindow();
+            ResetWindow();
+            NewGameWindow ngw = new NewGameWindow(this);
             ngw.ShowDialog();
             (Player dealer, List<Player> players) = ngw.StartingPlayers;
 
@@ -52,35 +54,97 @@ namespace Blackjack
             }
             LabelNbrOfDecks.Content = $"Decks: {GameManager.Deck.Multiplier}";
         }
-
+        //TODO: Change so message is not shown if game is not started
         private void BtnShuffle_Click(object sender, RoutedEventArgs e)
         {
+            GameManager.Shuffle(ShowGameNotStarted);
+            MessageBox.Show("Cards are shuffled!");
 
         }
 
         private void BtnHit_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Hämta den aktiva spelaren, genom att titta på vilken panel som
-            // just nu visas i PlayerSection och hämta den panelens Player.
-            Player currentPlayer = PlayerSection.Children();
-            GameManager.Hit(currentPlayer.PlayerId, );
+            if (GameManager.State == GameState.Ongoing)
+            {
+                CurrentPlayer = PlayerSection.Children.OfType<PlayerPanel>().FirstOrDefault().Player;
+                GameManager.Hit(CurrentPlayer.PlayerId, ShowGameNotStarted, ShowLessThanQuarterLeft, ShowPlayerIsThick);
+                PlayerSection.Children.OfType<PlayerPanel>().FirstOrDefault().UpdateContent(CurrentPlayer);
+                Player nextPlayer = GameManager.ContinueRound(ShowWinner);
+                UpdatePlayerSection(nextPlayer);
+
+            }
+            else
+            {
+                ShowGameNotStarted();
+            }
         }
 
         private void BtnStand_Click(object sender, RoutedEventArgs e)
         {
-
+            if (GameManager.State == GameState.Ongoing)
+            {
+                CurrentPlayer = PlayerSection.Children.OfType<PlayerPanel>().FirstOrDefault().Player;
+                GameManager.Stand(CurrentPlayer.PlayerId, ShowGameNotStarted);
+                PlayerSection.Children.OfType<PlayerPanel>().FirstOrDefault().UpdateContent(CurrentPlayer);
+                Player nextPlayer = GameManager.ContinueRound(ShowWinner);
+                UpdatePlayerSection(nextPlayer);       
+            }
+        }
+        
+        // Updates the PlayerSection with the next players information, 
+        // if there is no next player the current players information is updated
+        private void UpdatePlayerSection(Player nextPlayer)
+        {
+            if (nextPlayer != null && nextPlayer != CurrentPlayer)
+            {
+                PlayerSection.Children.Clear();
+                PlayerSection.Children.Add(
+                PlayerPanels.FirstOrDefault(p => p.Player.PlayerId == nextPlayer.PlayerId));
+            }
         }
 
-        private void ShowWinner(List<Player> winners)
+        private void ShowWinner(List<Player> winners, Player dealer)
         {
-            string winnersStr = "";
-            winners.ForEach(w => winnersStr += $"{w.Name}, ");
-            LabelWinnerIs.Content = $"Winner is {winnersStr}";
+            DealerSection.Children.OfType<PlayerPanel>().FirstOrDefault().UpdateContent(dealer);
+            string winnersStr = "Winner is: ";
+            if (!winners.Any())
+            {
+                winnersStr = "There are no winners in this round.";
+            }
+            else
+            {
+                winners.ForEach(w => winnersStr += $"{w.Name} (score: {w.Hand.Score}) ");
+            }
+            
+            LabelWinnerIs.Content = winnersStr;
         }
 
         private void ShowGameNotStarted()
         {
             MessageBox.Show("Game has not started");
+        }
+        //TODO: Implement functionality
+        private void ShowLessThanQuarterLeft()
+        {
+            MessageBoxResult result = MessageBox.Show("Would you like to shuffle the deck?", "Less than 25 % of the deck is left", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if ( result == MessageBoxResult.Yes)
+            {
+                GameManager.Shuffle(ShowGameNotStarted);
+                MessageBox.Show("Cards are shuffled!");
+            }
+        }
+        private void ShowPlayerIsThick()
+        {
+            MessageBox.Show("Player is thick!");
+        }
+
+        private void ResetWindow()
+        {
+            DealerSection.Children.Clear();
+            PlayerSection.Children.Clear();
+            PlayerPanels.Clear();
+            CurrentPlayer = null;
+            LabelWinnerIs.Content = "Winner is: ";
         }
     }
 }

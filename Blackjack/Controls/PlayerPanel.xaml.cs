@@ -21,7 +21,7 @@ namespace Blackjack.Controls
     /// </summary>
     public partial class PlayerPanel : UserControl
     {
-        public readonly Player Player;
+        public Player Player;
 
         public PlayerPanel(Player player)
         {
@@ -29,8 +29,21 @@ namespace Blackjack.Controls
             InitializeComponent();
 
             LabelPlayerName.Content = $"Name: {player.Name}";
-            LabelPlayerHandScore.Content = $"Hand score: {player.Hand.Score}";
+            if(player.PlayerId != 0)
+                LabelPlayerHandScore.Content = $"Hand score: {player.Hand.Score}";
 
+            player.Hand.Cards.ForEach(c =>
+            {
+                CardControl cardControl = new CardControl(c);
+                PlayerCardsPanel.Children.Add(cardControl);
+            });
+        }
+        public void UpdateContent(Player player)
+        {
+            Player = player;
+            LabelPlayerName.Content = $"Name: {player.Name}";
+            LabelPlayerHandScore.Content = $"Hand score: {player.Hand.Score}";
+            PlayerCardsPanel.Children.Clear();
             player.Hand.Cards.ForEach(c =>
             {
                 CardControl cardControl = new CardControl(c);

@@ -22,10 +22,12 @@ namespace Blackjack
     {
         public GameManager GameManager { get; set; }
         public (Player dealer, List<Player> players) StartingPlayers { get; set; }
+        public MainWindow MainWindow { get; set; }
 
-        public NewGameWindow()
+        public NewGameWindow(MainWindow mainWindow)
         {
-            GameManager = new GameManager();
+            GameManager = mainWindow.GameManager;
+            MainWindow = mainWindow;
             InitializeComponent();
         }
 

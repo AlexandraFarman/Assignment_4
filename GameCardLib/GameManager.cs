@@ -46,7 +46,7 @@ namespace GameCardLib
             }
 
             Deck = new Deck(nbrOfDecks);
-
+  
             
             Players.ForEach(p =>
             {
@@ -132,9 +132,9 @@ namespace GameCardLib
             return true;
         }
 
-        public Player ContinueRound(Action<List<Player>> showWinner)
+        public Player ContinueRound(Action<List<Player>, Player> showWinner)
         {
-            Player player = Players.SingleOrDefault(p => p.State == PlayerState.Ready && p.PlayerId != 0);
+            Player player = Players.FirstOrDefault(p => p.State == PlayerState.Ready && p.PlayerId != 0);
             if (player == null)
             {
                 Players.ForEach(p =>
@@ -142,15 +142,15 @@ namespace GameCardLib
                     if (p.State == PlayerState.HasPlayedRound && p.PlayerId != 0)
                         p.State = PlayerState.Ready;
                 });
-                player = Players.SingleOrDefault(p => p.State == PlayerState.Ready && p.PlayerId != 0);
+                player = Players.FirstOrDefault(p => p.State == PlayerState.Ready && p.PlayerId != 0);
             }
 
             // All players have state IsStanding or IsThick. Time for dealer to act.
             if(player == null)
             {
                 PlayDealer();
-                List<Player> winners = GetWinner();
-                showWinner(winners);
+                (List<Player> winners, Player dealer) = GetWinner();
+                showWinner(winners, dealer);
                 EndGame();
                 return null;
             }
@@ -180,7 +180,8 @@ namespace GameCardLib
             if (dealer.Hand.Score > 21) dealer.State = PlayerState.IsThick;
         }
 
-        public List<Player> GetWinner()
+        // Returns list of winners and dealer
+        public (List<Player>, Player) GetWinner()
         {
             Player dealer = Players.FirstOrDefault(p => p.PlayerId == 0);
             List<Player> winners = new List<Player>();
@@ -188,7 +189,7 @@ namespace GameCardLib
             if(dealer.State == PlayerState.IsThick)
             {
                 winners.AddRange(Players.Where(p => p.State != PlayerState.IsThick));
-            }
+            } 
             else
             {
                 int dealerScore = dealer.Hand.Score;
@@ -201,12 +202,13 @@ namespace GameCardLib
                 }
             }
 
-            return winners;
+            return (winners, dealer);
         }
 
         public void EndGame()
         {
             State = GameState.Finished;
+
         }
     }
 }
