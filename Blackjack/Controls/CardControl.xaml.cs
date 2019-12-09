@@ -24,26 +24,29 @@ namespace Blackjack.Controls
         public CardControl(Card card)
         {
             InitializeComponent();
-            LblCardSuite.Content = card.Suite;
-            string cardValue = card.Value.ToString();
-            if(card.Value == 1)
+            if (card.FaceUp)
             {
-                cardValue = "Ace";
-            }
-            else if(card.Value == 11)
-            {
-                cardValue = "Jack";
-            }
-            else if (card.Value == 12)
-            {
-                cardValue = "Queen";
-            }
-            else if (card.Value == 13)
-            {
-                cardValue = "King";
-            }
+                LblCardSuite.Content = card.Suite;
+                string cardValue = card.Value.ToString();
+                if (card.Value == 1)
+                {
+                    cardValue = "Ace";
+                }
+                else if (card.Value == 11)
+                {
+                    cardValue = "Jack";
+                }
+                else if (card.Value == 12)
+                {
+                    cardValue = "Queen";
+                }
+                else if (card.Value == 13)
+                {
+                    cardValue = "King";
+                }
 
-            LblCardValue.Content = cardValue;
+                LblCardValue.Content = cardValue;
+            }
         }
     }
 }
